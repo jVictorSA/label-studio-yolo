@@ -1,0 +1,32 @@
+services:
+  yolo:
+    container_name: yolo
+    build:
+      context: .
+    environment:
+      # specify these parameters if you want to use basic auth for the model server
+      - BASIC_AUTH_USER=
+      - BASIC_AUTH_PASS=
+      # set the log level for the model server
+      - LOG_LEVEL=DEBUG
+      # specify the model directory (likely you don't need to change this)
+      - MODEL_DIR=./models
+      - PYTHONPATH=/app
+
+      # Specify the Label Studio URL and API key to access
+      # Determine the actual IP using 'ifconfig' (Linux/Mac) or 'ipconfig' (Windows).
+      - LABEL_STUDIO_URL=${LABEL_STUDIO_URL}
+      - LABEL_STUDIO_API_KEY=${LABEL_STUDIO_API_KEY}
+      - TASK_TYPE=${TASK_TYPE}
+
+    ports:
+      - "9090:9090"
+    volumes:
+      - "./data/server:/data"
+
+    develop:
+      watch:
+        - action: rebuild
+          path: ./model.py
+          target: /app/model.py
+          
